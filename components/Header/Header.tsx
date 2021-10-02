@@ -1,22 +1,18 @@
 import { ReactNode } from 'react'
 import {
   Box,
+  Button,
   Flex,
-  Avatar,
   HStack,
   Link,
   IconButton,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
   useDisclosure,
   useColorModeValue,
   Stack,
 } from '@chakra-ui/react'
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
+import UserMenu from '../UserMenu/UserMenu'
+import { useAuthState } from '@/context/AuthContext'
 
 const Links = ['Dashboard', 'New Game']
 
@@ -37,6 +33,7 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { user, isAuthenticated } = useAuthState()
 
   return (
     <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -57,28 +54,23 @@ function Header() {
           </HStack>
         </HStack>
         <Flex alignItems={'center'}>
-          <Menu>
-            <MenuButton
-              as={Button}
-              rounded={'full'}
-              variant={'link'}
-              cursor={'pointer'}
-              minW={0}
+          {isAuthenticated && user ? (
+            <UserMenu {...user} />
+          ) : (
+            <Button
+              display={{ base: 'none', md: 'inline-flex' }}
+              fontSize={'sm'}
+              fontWeight={600}
+              color={'white'}
+              bg={'pink.400'}
+              href={'#'}
+              _hover={{
+                bg: 'pink.300',
+              }}
             >
-              <Avatar
-                size={'sm'}
-                src={
-                  'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                }
-              />
-            </MenuButton>
-            <MenuList>
-              <MenuItem>Link 1</MenuItem>
-              <MenuItem>Link 2</MenuItem>
-              <MenuDivider />
-              <MenuItem>Link 3</MenuItem>
-            </MenuList>
-          </Menu>
+              Login
+            </Button>
+          )}
         </Flex>
       </Flex>
 
